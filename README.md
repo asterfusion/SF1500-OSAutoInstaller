@@ -1,37 +1,47 @@
-# SF1500 OSAutoInstaller
-SF1500 is a box based on OCTEON TX 64-bit ARM-based CPU and with 2 10Gbps SFP
-ports and 8 1Gbps copper ports.
 
-## Description
-SF1500 OSAutoInstaller is an integrated tool collection which is used to install
-OS (ubuntu16.04.2) on eMMC of SF1500 Network BOX automatically.
+# Description
 
-## Usage
+SF1500 OSAutoInstaller is an integrated tool collection which is used to help you installing OS (ubuntu16.04.2) on eMMC of SF1500 Network BOX automatically. There are 3 most important parts in it.
 
-### Prepare
-Before installing OS on SF1500, you may have to connect SF1500 throu Serial Port or MGMT.
-**NOTE** Please make sure that SF1500 can access network.
+   - Partition for eMMC
+   - Burn image and root filesystem
 
-Download components from https://pan.baidu.com/s/1mCLzS_yMgAO8Ex-AbbqOug
+**NOTE** SF1500 is a box based on OCTEON TX 64-bit ARM-based CPU and with 2 10Gbps SFP ports and 8 1Gbps copper ports.
 
-	- rootfs.tgz
-	- drivers-4.14.11-svn258.tar
+## Partition
 
-Copy them to "SF1500-OSAutoInstaller/DS"
+For eMMC booting, there are two partitions which is listed below:
 
-Switch to SF1500-OSAutoInstaller and run following commands:
+   - /dev/mmcblk1p1, GPT (0xEF00), 100MB, for linux image.
+   - /dev/mmcblk1p2, Linux FileSystem (0x8300), the remaining space, for root filesystem.
+
+The auto installer makes partitions by using gdisk tool. Please read eMMCPartition.exp for more details.
+
+## Burn image and root filesystem
+
+There are some decompressed files in directory $OSAutoInstallerHome/DS
+
+   - Image.p2
+   - rootfs.tgz (download from [here](https://pan.baidu.com/s/1mCLzS_yMgAO8Ex-AbbqOug "www.pan.baidu.com"))
+
+**NOTE** You must reconfigure boot method to support eMMC booting at stage of uboot. The way how to reconfigure uboot will be showed at the end of this introduction (chapter Q&A).
+
+# Usage
+
+**NOTE** Please make sure that SF1500 can access network (MGMT port).
+
+  (1) Download components from [here](https://pan.baidu.com/s/1mCLzS_yMgAO8Ex-AbbqOug "www.pan.baidu.com")
+
+   - rootfs.tgz
+   - drivers-4.14.11-svn258.tar
+
+  (2) Copy them to "SF1500-OSAutoInstaller/DS"
+
+  (3) Switch to SF1500-OSAutoInstaller and run following commands:
 
 	./eMMCAutoInstaller.sh
 
 **NOTE** It will take almost 15 minutes.
-
-### Reset boot method
-Reboot the box, switch to uboot, change USB boot to eMMC boot with following commands:
-
-	SFF8104> setenv bootcmd "run bootmmc"
-	SFF8104> setenv bootargs "bootargs=console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=/dev/mmcblk1p2 coherent_pool=16M"
-	SFF8104> saveenv
-	SFF8104> reset
 
 # Example
 The following is an example of output on SF1500 while installing OS.
@@ -106,3 +116,25 @@ The following is an example of output on SF1500 while installing OS.
 		-  /dev/mmcblk1p1 -> /mnt/BURN-IN/p1
 		-  /dev/mmcblk1p2 -> /mnt/BURN-IN/p2
 	(6) Finished
+
+# Q&A
+
+## How to make a USB startup disk ?
+<TODO>
+
+## How to boot from eMMC ?
+You can change the booting method on u-boot to boot from eMMC with the following commands:
+
+	SFF8104> setenv bootcmd "run bootmmc"
+	SFF8104> setenv bootargs "bootargs=console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=/dev/mmcblk1p2 coherent_pool=16M"
+	SFF8104> saveenv
+	SFF8104> reset
+
+## How to boot from USB ?
+You can change the booting method on u-boot to boot from USB with the following commands:
+
+	SFF8104> setenv bootcmd "run bootusb"
+	SFF8104> setenv bootargs "console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=/dev/sda2 coherent_pool=16M"
+	SFF8104> saveenv
+	SFF8104> reset
+
