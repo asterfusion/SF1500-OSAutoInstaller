@@ -8,3 +8,6 @@ tar -xf ./DS/tools-update.tar.gz  >/dev/null 2>&1
 cd tools-update && ./tools-update.sh $1
 cd - && rm tools-update -rf
 
+cp ./DS/README.txt $1/root/
+
+
