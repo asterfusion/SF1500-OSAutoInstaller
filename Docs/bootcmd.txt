@@ -1,0 +1,29 @@
+A. U盘启动
+使用gdisk分区，第一个为EFI分区100M，第二个为Linux分区。
+mkfs.vfat	<分区1>
+mkfs.ext4 	<分区2>
+将Image文件放置于分区1根目录下，将rootfs.tgz解压到分区2根目录下。
+
+B. u-boot环境变量配置 USB
+setenv bootargs "console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=/dev/sda2 coherent_pool=16M"
+setenv bootusb "usb start;fatload usb 0:1 $kernel_addr Image;booti $kernel_addr - $fdtcontroladdr"
+setenv bootcmd "run bootusb"
+saveenv
+
+B. u-boot环境变量配置 MMC
+setenv rootdev "/dev/mmcblk1p2"
+setenv bootargs "console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=$rootdev coherent_pool=16M"
+setenv bootmmc "fatload mmc 1:1 $kernel_addr Image.p2;booti $kernel_addr - $fdtcontroladdr"
+setenv bootcmd "run bootmmc"
+saveenv
+
+
+C. 配置全量
+setenv bootargsusb "console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=/dev/sda2 coherent_pool=16M"
+setenv bootusb "usb start;fatload usb 0:1 $kernel_addr Image;booti $kernel_addr - $fdtcontroladdr"
+setenv rootdev "/dev/mmcblk1p2"
+setenv bootargsmmc "console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 debug maxcpus=4 rootwait rw root=$rootdev coherent_pool=16M"
+setenv bootmmc "fatload mmc 1:1 $kernel_addr Image.p2;booti $kernel_addr - $fdtcontroladdr"
+setenv bootargs "$bootargsusb"
+setenv bootcmd "run bootusb"
+saveenv
