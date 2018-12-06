@@ -1,0 +1,50 @@
+#!/usr/bin/expect
+
+# an example for args output
+for {set i 0} {$i < $argc} {incr i} {
+        puts "arg$i: [lindex $argv $i]"
+}
+
+proc usage {} {
+	regsub ".*/" $::argv0 "" name
+	puts "Usage:"
+	puts "  $name {block_device}."
+	puts "  Example: $name /dev/mmcblk1\n"
+	exit 1
+} 
+
+if {[llength $argv] != 1} {
+	usage
+}
+
+set disk [lindex $argv 0]
+set efi ef00
+set linux 8300
+
+puts "1. Formatting disk $disk ..."
+puts "2. Trying to disk partitioning for $disk"
+spawn gdisk $disk
+
+# Partition 1
+expect "Command (? for help):" { send "n\n" }
+expect "Partition number (1-128, default 1):" { send "\n" }
+expect "First sector" { send "\n" }
+expect "Last sector" { send "100M\n" }
+expect "Hex code or GUID (L to show codes, Enter = 8300):" { send "$efi\n" }
+
+# Partition 2
+expect "Command (? for help):" { send "n\n" }
+expect "Partition number (2-128, default 2):" { send "\n" }
+expect "First sector" { send "\n" }
+expect "Last sector" { send "\n" }
+expect "Hex code or GUID (L to show codes, Enter = 8300):" { send "$linux\n" }
+
+# Write to disk
+expect "Command (? for help):" { send "w\n" }
+expect "Do you want to proceed? (Y/N):" { send "Y\n" }
+
+expect eof
+
+exit
+
+
