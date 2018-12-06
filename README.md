@@ -1,4 +1,3 @@
-
 # Description
 
 SF1500 OSAutoInstaller is an integrated tool collection which is used to help you installing OS (ubuntu16.04.2) on eMMC of SF1500 Network BOX automatically. There are 3 most important parts in it.
@@ -8,7 +7,9 @@ SF1500 OSAutoInstaller is an integrated tool collection which is used to help yo
 
 **NOTE** SF1500 is a box based on OCTEON TX 64-bit ARM-based CPU and with 2 10Gbps SFP ports and 8 1Gbps copper ports.
 
-## Partition
+![](https://github.com/asterfusion/SF1500-OSAutoInstaller/blob/master/Docs/SF1500_front.jpg)  
+
+## Partition for eMMC
 
 For eMMC booting, there are two partitions which is listed below:
 
@@ -24,7 +25,7 @@ There are some decompressed files in directory $OSAutoInstallerHome/DS
    - Image.p2
    - rootfs.tgz (download from [here](https://pan.baidu.com/s/1mCLzS_yMgAO8Ex-AbbqOug "www.pan.baidu.com"))
 
-**NOTE** You must reconfigure boot method to support eMMC booting at stage of uboot. The way how to reconfigure uboot will be showed at the end of this introduction (chapter Q&A).
+**NOTE** You must reconfigure boot method to support eMMC booting at stage of uboot. The way how to reconfigure uboot will be showed at chapter Q&A.
 
 # Usage
 
