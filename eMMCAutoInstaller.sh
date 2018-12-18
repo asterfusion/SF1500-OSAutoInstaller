@@ -36,8 +36,6 @@ if [ "$p2"X != ""X ]; then
 	umount $p2
 fi
 
-
-
 # Format /dev/mmcblk1
 mkfs.ext4 $disk
 
